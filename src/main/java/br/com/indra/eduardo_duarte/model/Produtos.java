@@ -35,4 +35,6 @@ public class Produtos {
 
     @Column(name = "codigo_barras")
     private String codigoBarras;
+
+    private Boolean ativo;
 }
