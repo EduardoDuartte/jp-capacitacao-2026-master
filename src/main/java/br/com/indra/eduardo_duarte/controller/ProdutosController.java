@@ -2,6 +2,7 @@ package br.com.indra.eduardo_duarte.controller;
 
 import br.com.indra.eduardo_duarte.model.Produtos;
 import br.com.indra.eduardo_duarte.service.ProdutosService;
+import br.com.indra.eduardo_duarte.service.dto.ProdutoCreateDTO;
 import br.com.indra.eduardo_duarte.service.dto.ProdutoUpdateDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,14 +37,23 @@ public class ProdutosController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> criarProduto(@RequestBody Produtos produto) {
+    @GetMapping("/categoria/{idCategoria}")
+    public ResponseEntity<?> buscarProdutosPorCategoria(@PathVariable Long idCategoria) {
         try {
-            Produtos produtoCriado = produtosService.createdProduto(produto);
+            return ResponseEntity.ok(produtosService.buscarPorCategoria(idCategoria));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> criarProduto(@RequestBody ProdutoCreateDTO dto) {
+        try {
+            Produtos produtoCriado = produtosService.createdProduto(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest()
-                    .body("Erro ao cadastrar produto");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

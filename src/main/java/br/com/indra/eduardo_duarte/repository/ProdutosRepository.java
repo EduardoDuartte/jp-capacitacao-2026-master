@@ -10,4 +10,8 @@ import java.util.List;
 public interface ProdutosRepository extends JpaRepository<Produtos, Long> {
 
     List<Produtos> findByAtivoTrue();
+
+    List<Produtos> findByCategoria_IdCategoriaAndAtivoTrue(Long idCategoria);
+
+    List<Produtos> findByCategoria_IdCategoriaInAndAtivoTrue(List<Long> idsCategorias);
 }
