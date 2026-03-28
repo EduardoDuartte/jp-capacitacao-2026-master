@@ -26,6 +26,7 @@ public class PedidoService {
     private final ItemCarrinhoRepository itemCarrinhoRepository;
     private final CarrinhoService carrinhoService;
     private final EstoqueService estoqueService;
+    private final CupomService cupomService;
 
     @Transactional
     public Pedido checkout(CheckoutDTO dto) {
@@ -38,8 +39,13 @@ public class PedidoService {
             throw new RuntimeException("Carrinho está vazio");
         }
 
-        BigDecimal desconto = dto.getDesconto() == null ? BigDecimal.ZERO : dto.getDesconto();
         BigDecimal frete = dto.getFrete() == null ? BigDecimal.ZERO : dto.getFrete();
+
+        BigDecimal desconto = cupomService.validarECalcularDesconto(
+                dto.getCodigoCupom(),
+                dto.getIdUsuario(),
+                itensCarrinho
+        );
 
         Pedido pedido = new Pedido();
         pedido.setIdUsuario(dto.getIdUsuario());
@@ -81,6 +87,7 @@ public class PedidoService {
         }
 
         pedidoSalvo.setTotal(totalFinal);
+        cupomService.registrarUsoCupom(dto.getCodigoCupom(), dto.getIdUsuario());
         pedidoRepository.save(pedidoSalvo);
 
         carrinho.setStatus("FINALIZADO");

@@ -14,4 +14,5 @@ public class CheckoutDTO {
     private BigDecimal frete;
     private String endereco;
     private String criadoPor;
+    private String codigoCupom;
 }
